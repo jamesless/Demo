@@ -1,0 +1,47 @@
+jdbc.url=jdbc:mysql://10.118.230.25:3306/airscape?characterEncoding=UTF-8
+jdbc.driver=com.mysql.jdbc.Driver
+jdbc.username=airscape
+jdbc.password=airscape
+dataSource.initialSize=10
+dataSource.maxIdle=20
+dataSource.minIdle=5
+dataSource.maxActive=50
+dataSource.logAbandoned=true
+dataSource.removeAbandoned=true
+dataSource.removeAbandonedTimeout=180
+dataSource.maxWait=2000
+
+#mvn依赖分析入库 
+pomAnalysisTaskJobTime=0 0 2 * * ?
+
+#定时分析依赖关系
+analysisFrequent=0 0 3 * * ?
+
+
+#定时解析pom文件
+scheduleParseXml=0 0 1 * * ?
+#maven m2.conf的目录
+#classworldsConf=/weblogic/jmetertest/apache-maven-3.2.3/bin/m2.conf
+classworldsConf=/home/mysql/apache-maven-3.2.3/bin/m2.conf
+#classworldsConf=D:\\apache-maven-3.2.3\\bin\\m2.conf
+#maven的安装目录
+#mavenHome=/weblogic/jmetertest/apache-maven-3.2.3/
+mavenHome=/home/mysql/apache-maven-3.2.3/
+#mavenHome=D:\\apache-maven-3.2.3
+#存放pom文件的根目录
+#pomRootPath=/weblogic/jmetertest/pom/
+pomRootPath=/home/mysql/conf/pom
+#pomRootPath=D:\\home\\mysql\\conf\\pom
+#存放结果文件的根目录
+#resultFilePath=/weblogic/jmetertest/filehome
+resultFilePath=/home/mysql/conf/resultfile
+#resultFilePath=D:\\home\\mysql\\conf\\resultfile
+#存放maven启动jar包的目录
+#executeJarPath=/weblogic/jmetertest/apache-maven-3.2.3/boot/plexus-classworlds-2.5.1.jar
+executeJarPath=/home/mysql/apache-maven-3.2.3/boot/plexus-classworlds-2.5.1.jar
+#executeJarPath=D:\\apache-maven-3.2.3\\boot\\plexus-classworlds-2.5.1.jar 
+#maven启动jar的启动类 
+executeClass=org.codehaus.plexus.classworlds.launcher.Launcher
+#执行的maven命令
+executeCommand=com.sfpay.maven.plugin:sfpay-dependency-plugin:1.0.0:dependency
+
