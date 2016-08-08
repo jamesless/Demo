@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sfpay.airscape.server.dao.ApplicationDao">
+	<resultMap id="applicationMap" type="com.sfpay.airscape.server.vo.Application">
+		<id column="ID" property="id" />
+		<result column="APPLICATION_NAME" property="applicationName" />
+		<result column="PACKAGING" property="packaging" />
+		<result column="GROUP_ID" property="groupId" />
+		<result column="ARTIFACT_ID" property="artifactId" />
+		<result column="POM_URL" property="pomUrl" />
+		<result column="POM_DESCRIPTION" property="pomDescription" />
+		<result column="VERSION" property="version" />
+		<result column="ORIGIN_VERSION" property="originVersion" />
+		<result column="STATUS" property="status" />
+		<result column="PARENT_GROUP_ID" property="parentGroupId" />
+		<result column="PARENT_ARTIFACT_ID" property="parentArtifactId" />
+		<result column="PARENT_VERSION" property="parentVersion" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="UPDATE_TIME" property="updateTime" />
+	</resultMap>
+	<parameterMap type="com.sfpay.airscape.server.vo.Application"
+		id="application" />
+
+	<select id="query" parameterMap="application" resultMap="applicationMap">
+		SELECT * from T_APPLICATION	
+		where 
+		GROUP_ID=#{groupId} and
+		ARTIFACT_ID=#{artifactId} and
+		VERSION=#{version}
+	</select>
+	
+	<!-- <select id="queryByGAO" parameterMap="application" resultMap="applicationMap">
+		SELECT * from T_APPLICATION	
+		where 
+		GROUP_ID=#{groupId} and
+		ARTIFACT_ID=#{artifactId} and
+		ORIGINVERSION=#{originVersion}
+	</select> -->
+
+	<insert id="add" parameterMap="application" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into
+		T_APPLICATION(
+		APPLICATION_NAME,
+		PACKAGING,
+		GROUP_ID,
+		ARTIFACT_ID,
+		POM_URL,
+		POM_DESCRIPTION,
+		VERSION,
+		STATUS,
+		PARENT_GROUP_ID,
+		PARENT_ARTIFACT_ID,
+		PARENT_VERSION,
+		CREATE_TIME,
+		UPDATE_TIME
+		)
+		values(
+		#{applicationName},
+		#{packaging},
+		#{groupId},
+		#{artifactId},
+		#{pomUrl},
+		#{pomDescription},
+		#{version},
+		#{status},
+		#{parentGroupId},
+		#{parentArtifactId},
+		#{parentVersion},
+		now(),
+		now()
+		)
+	</insert>
+
+	<update id="update" parameterMap="application">
+		update T_APPLICATION set
+		APPLICATION_NAME=#{applicationName},
+		PACKAGING=#{packaging},
+		GROUP_ID=#{groupId},
+		ARTIFACT_ID=#{artifactId},
+		POM_URL=#{pomUrl},
+		POM_DESCRIPTION=#{pomDescription},
+		VERSION=#{version},
+		ORIGIN_VERSION=#{originVersion},
+		STATUS=#{status},
+		PARENT_GROUP_ID=#{parentGroupId},
+		PARENT_ARTIFACT_ID=#{parentArtifactId},
+		PARENT_VERSION=#{parentVersion},
+		UPDATE_TIME=now()
+		where
+		GROUP_ID=#{groupId} and
+		ARTIFACT_ID=#{artifactId} and
+		VERSION=#{version}
+	</update>
+
+	<delete id="delete" parameterType="String">	
+		delete from T_APPLICATION
+		where
+		ID=#{id}
+	</delete>
+
+	<select id="queryAll" resultMap="applicationMap">
+		SELECT
+		*
+		from
+		T_APPLICATION
+	</select>
+
+
+	<update id="updateCheckValid">
+		update T_APPLICATION set STATUS="1"
+		where
+		DATE_FORMAT(UPDATE_TIME,'%Y%m%d') &lt;
+		DATE_FORMAT(now(),'%Y%m%d')
+	</update>
+	
+	<select id="queryByPage" parameterType="com.sfpay.airscape.server.vo.Page" resultMap="applicationMap">
+		SELECT
+		*
+		from
+		T_APPLICATION  
+		<if test="condition != null">
+		where 1=1 		
+			<foreach collection="condition.keys" item="k"> 
+			    <if test="null != condition[k] and '' != condition[k]">  
+				and	${k} like CONCAT('%','${condition[k]}','%')
+			    </if>
+			</foreach> 
+        </if>
+		
+		limit #{limitBegin} , #{pageSize}
+	</select>
+	
+	
+	<select id="count" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT
+		count(1)
+		from
+		T_APPLICATION
+		<if test="params != null">
+		where 1=1 		
+			<foreach collection="params.keys" item="k"> 
+			    <if test="null != params[k] and '' != params[k]">  
+				and	${k} like CONCAT('%','${params[k]}','%')
+			    </if>
+			</foreach> 
+        </if>
+	</select>
+	
+	
+</mapper>

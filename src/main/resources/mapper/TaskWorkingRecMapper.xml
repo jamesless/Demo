@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sfpay.airscape.server.dao.TaskWorkingRecDao">
+	<resultMap id="taskWorkingRecMap" type="com.sfpay.airscape.server.vo.TaskWorkingRec">
+		<id column="ID" property="id" />
+		<result column="TASK_TYPE" property="taskType" />
+		<result column="STATUS" property="status" />
+		<result column="START_TIME" property="startTime" />
+		<result column="END_TIME" property="endTime" />
+		<result column="IS_ERR" property="isErr" />
+	</resultMap>
+
+	<select id="query" parameterType="String" resultMap="taskWorkingRecMap">
+		SELECT * from TASK_WORKING_REC	
+		where 
+		ID=#{id}
+	</select>
+
+	<insert id="add" parameterType="taskWorkingRec" useGeneratedKeys="true" keyProperty="id">
+		insert into
+		TASK_WORKING_REC(
+			TASK_TYPE,
+			STATUS,
+			START_TIME,
+			END_TIME,
+			IS_ERR
+		)
+		values(
+			#{taskType},
+			#{status},
+			#{startTime},
+			#{endTime},
+			#{isErr}
+		)
+	</insert>
+
+	<update id="update" parameterType="taskWorkingRec">
+		update TASK_WORKING_REC set
+			START_TIME=#{startTime},
+			STATUS=#{status},
+			END_TIME=#{endTime},
+			IS_ERR=#{isErr}
+		where
+			ID=#{id}
+	</update>
+
+	<delete id="delete" parameterType="String">	
+		delete from T_APTASK_WORKING_RECPLICATION
+		where
+		ID=#{id}
+	</delete>
+
+	<select id="queryAll" resultMap="taskWorkingRecMap">
+		SELECT
+		*
+		from
+		TASK_WORKING_REC
+	</select>
+
+
+</mapper>

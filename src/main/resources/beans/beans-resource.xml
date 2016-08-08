@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	  http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+	  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+	
+	<!-- 数据库JNDI -->
+<!-- 	    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+       <property name="jndiName">
+           <value>java:comp/env/jdbc/Quartz</value>
+       </property>
+    </bean>  -->
+    
+	<!-- 数据库连接池 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close" p:driverClassName="${jdbc.driver}" p:url="${jdbc.url}"
+		p:username="${jdbc.username}" p:password="${jdbc.password}"
+		p:initialSize="${dataSource.initialSize}" p:minIdle="${dataSource.maxIdle}"
+		p:maxIdle="${dataSource.minIdle}" p:maxWait="${dataSource.maxWait}"
+		p:maxActive="${dataSource.maxActive}" p:logAbandoned="${dataSource.logAbandoned}"
+		p:removeAbandoned="${dataSource.removeAbandoned}"
+		p:validationQuery="select 1"
+		p:testWhileIdle = "true" 
+		p:removeAbandonedTimeout="${dataSource.removeAbandonedTimeout}" />  
+		
+	<!-- Mybatis's sqlSessionFactory config -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+		p:dataSource-ref="dataSource" p:configLocation="classpath:mybatis/mybatis-config.xml"
+		p:mapperLocations="classpath:mapper/*.xml" p:typeAliasesPackage="com.sfpay.airscape.server.vo"/>
+		
+		<!-- 自动扫描了所有的XxxxMapper.java,这样就不用一个一个手动配置Mpper的映射了,只要Mapper接口类和Mapper映射文件对应起来就可以了. -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.sfpay.airscape.server.dao" />
+	</bean>
+	<bean name="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<bean name="svn"
+		class="com.sfpay.airscape.server.utils.SVNUtil">
+	</bean>
+
+	<!-- 启用事务 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>			
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED"/>
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="do*" propagation="REQUIRED" />
+			<tx:method name="mergeRelations" propagation="REQUIRES_NEW" />
+			<tx:method name="generateBatchInfoInIsolate" propagation="REQUIRES_NEW" />
+			<tx:method name="generateBatch" propagation="SUPPORTS" />	
+			<tx:method name="getGenerateId" propagation="REQUIRES_NEW" />			
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+		<aop:pointcut id="serviceOperation"
+			expression="execution(* com.sfpay.*.*.service.impl.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOperation" />
+	</aop:config>
+
+
+</beans> 

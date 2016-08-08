@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sfpay.airscape.server.dao.SubSystemDao">
+	<resultMap id="subSystemMap" type="com.sfpay.airscape.server.vo.SubSystem">
+		<id column="SUB_SYSTEM_ID" property="subSystemId" />
+		<result column="SUB_SYSTEM_ENAME" property="subSystemEname" />
+		<result column="SUB_SYSTEM_CNAME" property="subSystemCname" />
+		<result column="SYSTEM_ID" property="systemId" />
+		<result column="OWNER_NAME" property="ownerName" />
+		<result column="SYS_FILE_DIRETORY_LINK" property="sysFileDiretoryLink" />
+		<result column="DESCRIPTION" property="description" />
+		<result column="STATUS" property="status" />
+		<result column="LEVEL" property="level" />
+		<result column="IMPORTANT_LEVEL" property="importantLevel" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="UPDATE_TIME" property="updateTime" />
+	</resultMap>
+	<parameterMap type="com.sfpay.airscape.server.vo.SubSystem"
+		id="subSystem"></parameterMap>
+	<!-- T_SUB_SYSTEM -->
+	<select id="query" resultMap="subSystemMap" parameterType="String">
+		<!-- SELECT * from
+		T_SUB_SYSTEM SYSTEM,T_BUSINESS_PRODUCT PRODUCT where
+		SYSTEM.BUSINESS_ID=PRODUCT.BUSINESS_ID and
+		SYSTEM.SUB_SYSTEM_NAME=#{subSystemName} -->
+		SELECT * from
+		T_SUB_SYSTEM 
+		WHERE SUB_SYSTEM_ID=#{subSystemId}
+
+	</select>
+
+	<insert id="add" parameterMap="subSystem">
+		insert into
+		T_SUB_SYSTEM(
+		SUB_SYSTEM_ENAME,
+		SUB_SYSTEM_CNAME,
+		SYSTEM_ID,
+		OWNER_NAME,
+		SYS_FILE_DIRETORY_LINK,
+		DESCRIPTION,
+		STATUS,
+		LEVEL,
+		IMPORTANT_LEVEL,
+		CREATE_TIME,
+		UPDATE_TIME
+		)
+		values(
+		#{subSystemEname},
+		#{subSystemCname},
+		#{systemId},
+		#{ownerName},
+		#{sysFileDiretoryLink},
+		#{description},
+		#{status},
+		#{level},
+		#{importantLevel},
+		now(),
+		now()
+		)
+	</insert>
+
+	<update id="update" parameterMap="subSystem">
+		update T_SUB_SYSTEM set
+		SUB_SYSTEM_ENAME=#{subSystemEname},
+		SUB_SYSTEM_CNAME=#{subSystemCname},
+		SYSTEM_ID=#{systemId},
+		SYS_FILE_DIRETORY_LINK=#{sysFileDiretoryLink},
+		DESCRIPTION=#{description},
+		IMPORTANT_LEVEL=#{importantLevel},
+		UPDATE_TIME=now(),
+		STATUS=#{status},
+		LEVEL=#{level}
+		where
+		SUB_SYSTEM_ID=#{subSystemId}
+	</update>
+
+	<delete id="delete" parameterType="String">
+		delete from T_SUB_SYSTEM
+		where
+		SUB_SYSTEM_ID=#{subSystemId}
+	</delete>
+
+	<select id="queryAll" resultMap="subSystemMap">
+		SELECT *
+		from
+		T_SUB_SYSTEM order by SUB_SYSTEM_ENAME
+	</select>
+</mapper>

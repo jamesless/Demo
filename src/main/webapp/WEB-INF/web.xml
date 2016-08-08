@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:javaee="http://java.sun.com/xml/ns/javaee"
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+	<display-name>airscape-server</display-name>
+	
+	<!--启动Web容器时，自动装配ApplicationContext的配置信息-->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<!-- 初始化配置文件 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:application.xml</param-value>
+	</context-param>
+	
+	<!-- 解决struts等框架可能产生的内存泄露问题 -->
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+	
+	<!--代理过滤器配置，标准化配置，所有web项目都必须配置，结合application.xml中的sfpay-mvc:filter-chain-proxy进行配置-->
+	<filter>
+		<filter-name>filterChainProxy</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<init-param>
+			<param-name>targetBeanName</param-name>
+			<param-value>filterChainProxy</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>filterChainProxy</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!-- 用户操作拦截 -->
+	<filter>
+		<filter-name>loginFilter</filter-name>
+		<filter-class> com.sfpay.airscape.server.filter.LoginFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>loginFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<!--回声测试servlet，标准化配置，所有web项目都必须配置，用于系统状态监控，注意不要被过滤器拦截，如系统使用shiro时，需配置“/echo = anon”-->
+	<servlet>
+		<servlet-name>echo</servlet-name>
+		<servlet-class>com.sfpay.framework2.web.servlet.EchoServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>echo</servlet-name>
+		<url-pattern>/echo</url-pattern>
+	</servlet-mapping>
+	
+	<!-- spring mvc  -->
+	<servlet>
+		<servlet-name>mvc</servlet-name>
+		<servlet-class>com.sfpay.framework2.web.servlet.SfpayDispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:/mvc/*.xml</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>mvc</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+</web-app>

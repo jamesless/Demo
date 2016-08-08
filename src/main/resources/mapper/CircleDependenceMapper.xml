@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sfpay.airscape.server.dao.CircleDependenceDao">
+	<resultMap id="circleDependenceMap" type="com.sfpay.airscape.server.vo.CircleDependence">
+		<id column="ID" property="id" />
+		<result column="DEPENDENCE_ID" property="dependenceId" />
+		<result column="TYPE" property="type" />
+		<result column="STATUS" property="status" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="UPDATE_TIME" property="updateTime" />
+	</resultMap>
+	<parameterMap type="com.sfpay.airscape.server.vo.CircleDependence" id="circleDependence"></parameterMap>
+	<select id="query" resultMap="circleDependenceMap"
+		parameterType="String">
+		SELECT * from T_CIRCLE_DEPENDENCE where ID=#{id}
+	</select>
+
+	<insert id="add" parameterType="circleDependence"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		T_CIRCLE_DEPENDENCE(
+		DEPENDENCE_ID,
+		TYPE,
+		STATUS,
+		CREATE_TIME,
+		UPDATE_TIME)
+		values(
+		#{dependenceId},
+		#{type},
+		#{status},
+		now(),
+		now()
+		)
+	</insert>
+
+	<update id="update" parameterType="circleDependence">
+		update T_CIRCLE_DEPENDENCE set
+		DEPENDENCE_ID=#{dependenceId},
+		TYPE=#{type},
+		STATUS=#{status},
+		UPDATE_TIME=now()
+		where
+		ID=#{id}
+	</update>
+
+	<delete id="delete" parameterType="String">
+		delete from
+		T_CIRCLE_DEPENDENCE
+		where
+		ID=#{id}
+	</delete>
+
+	<select id="queryAll" resultMap="circleDependenceMap">
+		SELECT * from
+		T_CIRCLE_DEPENDENCE
+	</select>
+</mapper>

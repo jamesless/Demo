@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sfpay.airscape.server.dao.SysProdRelDao">
+	<resultMap id="sysProdRelMap" type="com.sfpay.airscape.server.vo.auxiliary.SysProdRel">
+		<id column="ID" property="id" />
+		<result column="BUSINESS_ID" property="businessId" />
+		<result column="SYSTEM_ID" property="systemId" />
+	</resultMap>
+	<parameterMap type="com.sfpay.airscape.server.vo.auxiliary.SysProdRel" id="sysProdRel"></parameterMap>
+	
+
+	<insert id="add" parameterMap="sysProdRel" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into
+		t_product_sys_relation(
+		SYSTEM_ID,
+		BUSINESS_ID
+		)
+		values(
+		#{systemId},
+		#{businessId}
+		)
+	</insert>
+
+
+	<delete id="delete" parameterType="sysProdRel">
+		delete from t_product_sys_relation
+		where
+		SYSTEM_ID=#{systemId} and BUSINESS_ID=#{businessId}
+	</delete>
+
+	<delete id="deleteBySystemid" parameterType="String">
+		delete from t_product_sys_relation
+		where
+		SYSTEM_ID=#{systemId}
+	</delete>
+
+
+</mapper>

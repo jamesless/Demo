@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sfpay.airscape.server.dao.SvnRepositoryDao" >
+  <resultMap id="svnRepositoryMap" type="com.sfpay.airscape.server.vo.SvnRepository" >
+    <id column="id" property="id" />
+    <result column="REPOSITORY_NAME" property="repositoryName" />
+    <result column="REPOSITORY_URL" property="repositoryUrl" />
+    <result column="STATUS" property="status" />
+    <result column="DESCRIPTION" property="description" />
+  </resultMap>
+  <parameterMap type="com.sfpay.airscape.server.vo.SvnRepository" id="svnRepository"></parameterMap>
+  <!-- T_SVN_REPOSITORY -->
+  <select id="query" resultMap="svnRepositoryMap" parameterType="String">
+		select * from
+		T_SVN_REPOSITORY where id =#{id}
+	</select>
+
+	<insert id="add" parameterMap="svnRepository" useGeneratedKeys="true"
+		keyProperty="repositoryId">
+		insert into
+		T_SVN_REPOSITORY(REPOSITORY_NAME,REPOSITORY_URL,STATUS,DESCRIPTION)
+		values(#{repositoryName},#{repositoryUrl},#{status},#{description})
+	</insert>
+
+	<update id="update" parameterMap="svnRepository">
+		update T_SVN_REPOSITORY set
+		REPOSITORY_NAME=#{repositoryName},REPOSITORY_URL=#{repositoryUrl},STATUS=#{status},DESCRIPTION=#{description}
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="String">
+		delete from T_SVN_REPOSITORY
+		where id=#{id}
+	</delete>
+
+	<select id="queryAll" resultMap="svnRepositoryMap">
+		select id,
+		REPOSITORY_NAME,REPOSITORY_URL,STATUS,DESCRIPTION from T_SVN_REPOSITORY
+	</select>
+</mapper>

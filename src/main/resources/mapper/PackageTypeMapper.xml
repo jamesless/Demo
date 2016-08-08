@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sfpay.airscape.server.dao.PackageTypeDao">
+	<resultMap id="packageTypeMap" type="com.sfpay.airscape.server.vo.PackageType">
+		<id column="TYPE_ID" property="typeId" />
+		<result column="PACKAGE_TYPE" property="packageType" />
+		<result column="DESCRIPTION" property="description" />
+	</resultMap>
+	<parameterMap type="com.sfpay.airscape.server.vo.PackageType" id="packageType"></parameterMap>
+	<select id="query" resultMap="packageTypeMap" parameterType="String">
+		SELECT * FROM PACKAGE_TYPE WHERE TYPE_ID=#{typeId}
+	</select>
+
+	<insert id="add" parameterMap="packageType">
+		INSERT INTO PACKAGE_TYPE(
+			PACKAGE_TYPE,DESCRIPTION
+		)VALUES(
+			#{packageType},#{description}
+		)
+	</insert>
+
+	<update id="update" parameterMap="packageType" useGeneratedKeys="true" keyProperty="typeId">
+		update PACKAGE_TYPE set
+			PACKAGE_TYPE=#{packageType},
+			DESCRIPTION=#{description}
+		where
+			TYPE_ID=#{typeId}
+	</update>
+
+	<delete id="delete" parameterType="String">
+		DELETE from PACKAGE_TYPE WHERE TYPE_ID=#{typeId}
+	</delete>
+
+	<select id="queryAll" resultMap="packageTypeMap">
+		SELECT *
+		from
+		PACKAGE_TYPE
+	</select>
+</mapper>

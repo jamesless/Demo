@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sfpay.airscape.server.dao.ArchitectureLevelDao">
+	<resultMap id="architectureLevelMap"
+		type="com.sfpay.airscape.server.vo.ArchitectureLevel">
+		<id column="LEVEL" property="level" />
+		<result column="LEVEL_NAME" property="levelName" />
+		<result column="DESCRIPTION" property="description" />
+	</resultMap>
+	<parameterMap type="com.sfpay.airscape.server.vo.ArchitectureLevel" id="architectureLevel"></parameterMap>
+	<select id="query" resultMap="architectureLevelMap">
+		SELECT * from ARCHITECTURE_LEVEL
+		WHERE
+		LEVEL=#{level}
+	</select>
+	<insert id="add" parameterType="architectureLevel"
+		useGeneratedKeys="true" keyProperty="level">
+		insert into
+		ARCHITECTURE_LEVEL(
+		LEVEL_NAME,
+		DESCRIPTION)
+		values(
+		#{levelName},
+		#{description}
+		)
+	</insert>
+
+	<update id="update" parameterType="architectureLevel">
+		update ARCHITECTURE_LEVEL set
+		LEVEL_NAME=#{levelName},DESCRIPTION=#{description}
+		where
+		LEVEL=#{level}
+	</update>
+
+	<delete id="delete" parameterType="String">
+		delete from ARCHITECTURE_LEVEL
+		where
+		LEVEL=#{level}
+	</delete>
+
+	<select id="queryAll" resultMap="architectureLevelMap">
+		SELECT * from ARCHITECTURE_LEVEL
+	</select>
+</mapper>

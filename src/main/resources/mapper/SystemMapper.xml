@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sfpay.airscape.server.dao.SystemDao">
+	<resultMap id="systemMap" type="com.sfpay.airscape.server.vo.System">
+		<id column="SYSTEM_ID" property="systemId" />
+		<result column="BUSINESS_ID" property="businessId" />
+		<result column="SYSTEM_ENAME" property="systemEname" />
+		<result column="SYSTEM_CNAME" property="systemCname" />
+		<result column="LEVEL" property="level" />
+		<result column="OWNER_NAME" property="ownerName" />
+		<result column="DESCRIPTION" property="description" />
+		<result column="STATUS" property="status" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="UPDATE_TIME" property="updateTime" />
+	</resultMap>
+	<parameterMap type="com.sfpay.airscape.server.vo.System" id="system"></parameterMap>
+	<select id="query" parameterType="String" resultMap="systemMap">
+		SELECT a.SYSTEM_ID,b.BUSINESS_ID,a.SYSTEM_ENAME,a.SYSTEM_CNAME,a.LEVEL,
+		a.OWNER_NAME,a.DESCRIPTION,a.STATUS from T_SYSTEM a 
+		left join  t_product_sys_relation b	on a.SYSTEM_ID = b.SYSTEM_ID 
+		where a.SYSTEM_ID=#{systemid}
+	</select>
+
+	<insert id="add" parameterMap="system" useGeneratedKeys="true"
+		keyProperty="systemId">
+		insert into
+		T_SYSTEM(
+		SYSTEM_ENAME,
+		SYSTEM_CNAME,
+		LEVEL,
+		OWNER_NAME,
+		DESCRIPTION,
+		STATUS,
+		CREATE_TIME,
+		UPDATE_TIME
+		)
+		values(
+		#{systemEname},
+		#{systemCname},
+		#{level},
+		#{ownerName},
+		#{description},
+		#{status},
+		now(),
+		now()
+		)
+	</insert>
+
+	<update id="update" parameterMap="system">
+		update T_SYSTEM set
+		SYSTEM_ENAME=#{systemEname},
+		SYSTEM_CNAME=#{systemCname},
+		LEVEL=#{level},
+		OWNER_NAME=#{ownerName},
+		DESCRIPTION=#{description},
+		STATUS=#{status},
+		UPDATE_TIME=now()
+		where
+		SYSTEM_ID=#{systemId}
+	</update>
+
+	<delete id="delete" parameterType="String">
+		delete from T_SYSTEM
+		where
+		SYSTEM_ID=#{systemid}
+	</delete>
+
+	<select id="queryAll" resultMap="systemMap">
+		SELECT a.SYSTEM_ID,b.BUSINESS_ID,a.SYSTEM_ENAME,a.SYSTEM_CNAME,a.LEVEL,
+		a.OWNER_NAME,a.DESCRIPTION,a.STATUS from T_SYSTEM a 
+		left join  t_product_sys_relation b	on a.SYSTEM_ID = b.SYSTEM_ID 
+	</select>
+
+
+	<update id="updateCheckValid">
+		update T_APPLICATION set STATUS="1"
+		where
+		DATE_FORMAT(UPDATE_TIME,'%Y%m%d') &lt;
+		DATE_FORMAT(now(),'%Y%m%d')
+	</update>
+
+</mapper>
